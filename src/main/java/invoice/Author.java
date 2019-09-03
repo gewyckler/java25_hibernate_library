@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,17 +16,23 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Author implements IBaseEntity{
+public class Author implements IBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String name;
-    private String lastName;
+    private String surName;
+
+    private LocalDate birthTime;
+
+    // z powodu relacji many to many mamy relacje posredniczaco o nazwie Author_Book/
+    // zapytanie musi dotyczyc tebeli posredniczacej i zliczac wystapienie w tej tabeli
+    @Formula("select count(*) from Authot_Book ab where ab.authors_id = id)")
+    private int numberOfBooks;
 
     // możemy z tej strony dodawać (książki do autorów) żeby tworzyć relacje
     @EqualsAndHashCode.Exclude
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Book> books = new HashSet<>();
 
 }
