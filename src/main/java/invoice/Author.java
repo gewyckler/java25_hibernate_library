@@ -27,12 +27,11 @@ public class Author implements IBaseEntity {
 
     // z powodu relacji many to many mamy relacje posredniczaco o nazwie Author_Book/
     // zapytanie musi dotyczyc tebeli posredniczacej i zliczac wystapienie w tej tabeli
-    @Formula("select count(*) from Authot_Book ab where ab.authors_id = id)")
+    @Formula("(select count(*) from author_book ab where ab.authors_id = id)")
     private int numberOfBooks;
 
     // możemy z tej strony dodawać (książki do autorów) żeby tworzyć relacje
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Book> books = new HashSet<>();
-
 }

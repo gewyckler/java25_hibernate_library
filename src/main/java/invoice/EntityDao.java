@@ -8,9 +8,7 @@ import org.hibernate.Transaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class EntityDao {
 
@@ -30,8 +28,8 @@ public class EntityDao {
         }
     }
 
-    public <T extends IBaseEntity> List<T> getAll(Class<T> classT) {
-        List<T> list = new ArrayList<>();
+    public <T extends IBaseEntity> Set<T> getAll(Class<T> classT) {
+        Set<T> set = new LinkedHashSet<>();
         SessionFactory factory = HibernateUtil.getSessionFactory();
         try (Session session = factory.openSession()) {
 
@@ -49,11 +47,11 @@ public class EntityDao {
             criteriaQuery.select(rootTable);
 
             // wywołujemy zapytanie, wyniki zbieramy do listy
-            list.addAll(session.createQuery(criteriaQuery).list());
+            set.addAll(session.createQuery(criteriaQuery).list());
         } catch (HibernateException e) {
             e.printStackTrace();
         }
-        return list;
+        return set;
     }
 
 

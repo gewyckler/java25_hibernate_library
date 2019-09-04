@@ -22,7 +22,7 @@ public class Book implements IBaseEntity {
     private int yearWritten;
 
     @Formula("year(now() - yearWritten)")
-    private int howOld;
+    private Integer howOld;
 
     private int numberOfPages;
     private int numberOfAvailableCopies;

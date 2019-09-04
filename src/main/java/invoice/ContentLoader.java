@@ -9,15 +9,15 @@ public class ContentLoader {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     public Client updateClientInformation(Client client) {
-        System.out.println("Zmienić imie? Obecne: " + client.getName() + " true/false");
+        System.out.println("Zmienić imie? Obecne: " + client.getName() + " t/f");
         if (truOrFalse()) {
             client.setName(typeName());
         }
-        System.out.println("Zmienić nazwisko? Obecne: " + client.getSurName() + " true/false");
+        System.out.println("Zmienić nazwisko? Obecne: " + client.getSurName() + " t/n");
         if (truOrFalse()) {
             client.setSurName(typeSurName());
         }
-        System.out.println("Zmienić numer Id? Obecna: " + client.getIdNumber() + " true/false");
+        System.out.println("Zmienić numer Id? Obecna: " + client.getIdNumber() + " t/n");
         if (truOrFalse()) {
             client.setIdNumber(typeIdNumber());
         }
@@ -25,20 +25,37 @@ public class ContentLoader {
     }
 
     public Author updateAuthorInformation(Author author) {
-        System.out.println("Zmienić imie? Obecne: " + author.getName() + " true/false");
+        System.out.println("Zmienić imie? Obecne: " + author.getName() + " t/n");
         if (truOrFalse()) {
             author.setName(typeName());
         }
-        System.out.println("Zmienić nazwisko? Obecne: " + author.getSurName() + " true/false");
+        System.out.println("Zmienić nazwisko? Obecne: " + author.getSurName() + " t/n");
         if (truOrFalse()) {
             author.setSurName(typeSurName());
         }
-        System.out.println("Zmienić date urodzenia? Obecna: " + author.getBirthTime() + " true/false");
+        System.out.println("Zmienić date urodzenia? Obecna: " + author.getBirthTime() + " t/n");
         if (truOrFalse()) {
             author.setBirthTime(typeBirthDate());
         }
         return author;
     }
+
+    public Book updateBookInformation(Book book) {
+        System.out.println("Zmienić tytuł? Obecny: " + book.getTitle() + " t/n");
+        if (truOrFalse()) {
+            book.setTitle(typeName());
+        }
+        System.out.println("Zmienić rok napisania? Obecny: " + book.getYearWritten() + " t/n");
+        if (truOrFalse()) {
+            book.setYearWritten((typeYear()));
+        }
+        System.out.println("Zmienić liczbę stron w książce? Obecnie: " + book.getNumberOfPages() + " t/n");
+        if (truOrFalse()) {
+            book.setNumberOfPages(typeNumberOfPages());
+        }
+        return book;
+    }
+
 
     public Client createClient() {
         Client client = new Client();
@@ -78,8 +95,19 @@ public class ContentLoader {
         return scanner.nextLine();
     }
 
-    public Boolean truOrFalse() {
-        return Boolean.valueOf(scanner.nextLine());
+    public boolean truOrFalse() {
+        String chose;
+        do {
+            chose = scanner.nextLine();
+            if (chose.equalsIgnoreCase("t")) {
+                return true;
+            } else if (chose.equalsIgnoreCase("n")) {
+                return false;
+            } else {
+                System.out.println("Nie ma takie opcji.");
+            }
+        } while (!chose.equalsIgnoreCase("t") || !chose.equalsIgnoreCase("n"));
+        return false;
     }
 
     public Author createAuthor() {
@@ -107,9 +135,14 @@ public class ContentLoader {
         book.setTitle(typeTitle());
         book.setYearWritten(typeYear());
         book.setNumberOfPages(typeNumberOfPages());
-        book.setNumberOfAvailableCopies(typeNumberOfPages());
+        book.setNumberOfAvailableCopies(typeNumberOfAvailableCopies());
 
         return book;
+    }
+
+    public int typeNumberOfAvailableCopies() {
+        System.out.println("Wpisz liczbę dostępnych kopi tej ksiązki:");
+        return Integer.parseInt(scanner.nextLine());
     }
 
     public String typeTitle() {
