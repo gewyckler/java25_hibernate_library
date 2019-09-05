@@ -2,11 +2,14 @@ package invoice;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 
 public class ContentLoader {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private EntityDao entityDao = new EntityDao();
 
     public Client updateClientInformation(Client client) {
         System.out.println("Zmienić imie? Obecne: " + client.getName() + " t/f");
@@ -66,6 +69,47 @@ public class ContentLoader {
         return client;
     }
 
+    public Author createAuthor() {
+        Author author = new Author();
+        author.setId(null);
+        author.setName(typeName());
+        author.setSurName(typeSurName());
+
+        author.setBirthTime(typeBirthDate());
+
+        return author;
+    }
+
+    public Book createBook() {
+        Book book = new Book();
+
+        book.setId(null);
+        book.setTitle(typeTitle());
+        book.setYearWritten(typeYear());
+        book.setNumberOfPages(typeNumberOfPages());
+        book.setNumberOfAvailableCopies(typeNumberOfAvailableCopies());
+
+        return book;
+    }
+
+
+    public Author addBookToAuthor(Author author) {
+        print(entityDao.getAll(Book.class));
+        System.out.println("Wybierz Id ksiązki którą chcesz dodać");
+        Long idB = getId();
+        Optional<Book> optionalBook = entityDao.getById(Book.class, idB);
+        if (optionalBook.isPresent()) {
+            author.getBooks().add(optionalBook.get());
+        }
+        return author;
+    }
+
+    public <T> void print(Set<T> tSet) {
+        for (T t : tSet) {
+            System.out.println(t);
+        }
+    }
+
     public String typeName() {
         System.out.println("Podaj imie:");
         return scanner.nextLine();
@@ -90,10 +134,6 @@ public class ContentLoader {
         return scanner.nextLine();
     }
 
-    public String waitForUser() {
-        System.out.println("Wciśnij 'ENTER' aby kontynuować...");
-        return scanner.nextLine();
-    }
 
     public boolean truOrFalse() {
         String chose;
@@ -110,34 +150,12 @@ public class ContentLoader {
         return false;
     }
 
-    public Author createAuthor() {
-        Author author = new Author();
-        author.setId(null);
-        author.setName(typeName());
-        author.setSurName(typeSurName());
-
-        author.setBirthTime(typeBirthDate());
-
-        return author;
-    }
 
     public LocalDate typeBirthDate() {
         System.out.println("Wpisz date urodzin (dd-MM-yyyy");
         String date = scanner.nextLine();
         LocalDate birthDate = LocalDate.parse(date, formatter);
         return birthDate;
-    }
-
-    public Book createBook() {
-        Book book = new Book();
-
-        book.setId(null);
-        book.setTitle(typeTitle());
-        book.setYearWritten(typeYear());
-        book.setNumberOfPages(typeNumberOfPages());
-        book.setNumberOfAvailableCopies(typeNumberOfAvailableCopies());
-
-        return book;
     }
 
     public int typeNumberOfAvailableCopies() {
@@ -163,5 +181,10 @@ public class ContentLoader {
 
         } while (number <= 0);
         return number;
+    }
+
+    public String waitForUser() {
+        System.out.println("Wciśnij 'ENTER' aby kontynuować...");
+        return scanner.nextLine();
     }
 }
