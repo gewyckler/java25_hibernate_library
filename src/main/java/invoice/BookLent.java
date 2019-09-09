@@ -25,6 +25,6 @@ public class BookLent implements IBaseEntity{
     @CreationTimestamp
     private LocalDate dateLent;
 
-    private LocalDate dateReturned;
+    private LocalDate dateReturned  ;
 
 }

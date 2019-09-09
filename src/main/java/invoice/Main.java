@@ -32,7 +32,7 @@ public class Main {
                         System.out.println("10. Listowanie książek.");
                         System.out.println("11. Usuwanie książek.");
                         System.out.println("12. Modyfikuj tytuł/rok napsania/ilość stron w książce.");
-                        System.out.println("q.  Wyjście...");
+                        System.out.println("q.  Cofnij...");
                         toDo = ct.menu();
 
                         if (toDo.equalsIgnoreCase("1")) { // dodawania autorów
@@ -125,10 +125,12 @@ public class Main {
                         do {
                             if (optionalAuthor.isPresent()) {
                                 ct.addBookToAuthor(optionalAuthor.get());
+                                entityDao.saveOrUpdate(optionalAuthor.get());
                             }
-                            System.out.println("Dodać kolejną ksiązkę?");
+                            System.out.println("Dodać kolejną ksiązkę? t/n");
                         } while (ct.truOrFalse());
                     } else if (toDo.equalsIgnoreCase("2")) { // Dodawanie wypożyczeń danemu klientowi
+                        ct.createBookLent();
 
                     } else if (toDo.equalsIgnoreCase("q")) {
                         continue;

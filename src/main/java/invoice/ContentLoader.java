@@ -92,17 +92,58 @@ public class ContentLoader {
         return book;
     }
 
+    public BookLent createBookLent() {
+        BookLent bookLent = new BookLent();
+        bookLent.setId(null);
+        bookLent.setClient(addClientToBookLent());
+        bookLent.setBook(addBookToBookLent());
+        bookLent.setDateLent(LocalDate.now());
 
-    public Author addBookToAuthor(Author author) {
-        print(entityDao.getAll(Book.class));
-        System.out.println("Wybierz Id ksiązki którą chcesz dodać");
-        Long idB = getId();
-        Optional<Book> optionalBook = entityDao.getById(Book.class, idB);
-        if (optionalBook.isPresent()) {
-            author.getBooks().add(optionalBook.get());
-        }
-        return author;
+        return bookLent;
     }
+
+    public Client addClientToBookLent() {
+        Optional<Client> optionalClient;
+        do {
+            print(entityDao.getAll(Client.class));
+            System.out.println("Wybierz Id klienta który wypożycza");
+            Long id = getId();
+            optionalClient = entityDao.getById(Client.class, id);
+            if (!optionalClient.isPresent()) {
+                System.out.println("Wpisano błędne Id.");
+            }
+        } while (!optionalClient.isPresent());
+        return optionalClient.get();
+    }
+
+    public Book addBookToBookLent() {
+        Optional<Book> optionalBook;
+        do {
+            print(entityDao.getAll(Book.class));
+            System.out.println("Wybierz Id ksiązki którą chcesz dodać");
+            Long idB = getId();
+            optionalBook = entityDao.getById(Book.class, idB);
+            if (!optionalBook.isPresent()) {
+                System.out.println("Wpisano błedne Id.");
+            }
+        } while (!optionalBook.isPresent());
+        return optionalBook.get();
+    }
+
+    public void addBookToAuthor(Author author) {
+        Optional<Book> optionalBook;
+        do {
+            print(entityDao.getAll(Book.class));
+            System.out.println("Wpisz Id książki którą chcesz dodać");
+            Long id = getId();
+            optionalBook = entityDao.getById(Book.class, id);
+            if (optionalBook.isPresent()) {
+                author.getBooks().add(optionalBook.get());
+            }
+        } while (!optionalBook.isPresent());
+
+    }
+
 
     public <T> void print(Set<T> tSet) {
         for (T t : tSet) {
