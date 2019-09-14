@@ -2,6 +2,7 @@ package invoice;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -92,10 +93,10 @@ public class ContentLoader {
         return book;
     }
 
-    public BookLent createBookLent() {
+    public BookLent createBookLent(Client client) {
         BookLent bookLent = new BookLent();
         bookLent.setId(null);
-        bookLent.setClient(addClientToBookLent());
+        bookLent.setClient(client);
         bookLent.setBook(addBookToBookLent());
         bookLent.setDateLent(LocalDate.now());
 
@@ -105,7 +106,7 @@ public class ContentLoader {
     public Client addClientToBookLent() {
         Optional<Client> optionalClient;
         do {
-            print(entityDao.getAll(Client.class));
+            printSet(entityDao.getAll(Client.class));
             System.out.println("Wybierz Id klienta który wypożycza");
             Long id = getId();
             optionalClient = entityDao.getById(Client.class, id);
@@ -119,7 +120,7 @@ public class ContentLoader {
     public Book addBookToBookLent() {
         Optional<Book> optionalBook;
         do {
-            print(entityDao.getAll(Book.class));
+            printSet(entityDao.getAll(Book.class));
             System.out.println("Wybierz Id ksiązki którą chcesz dodać");
             Long idB = getId();
             optionalBook = entityDao.getById(Book.class, idB);
@@ -133,7 +134,7 @@ public class ContentLoader {
     public void addBookToAuthor(Author author) {
         Optional<Book> optionalBook;
         do {
-            print(entityDao.getAll(Book.class));
+            printSet(entityDao.getAll(Book.class));
             System.out.println("Wpisz Id książki którą chcesz dodać");
             Long id = getId();
             optionalBook = entityDao.getById(Book.class, id);
@@ -145,11 +146,18 @@ public class ContentLoader {
     }
 
 
-    public <T> void print(Set<T> tSet) {
+    public <T> void printSet(Set<T> tSet) {
         for (T t : tSet) {
             System.out.println(t);
         }
     }
+
+    public <T> void printList(List<T> tList) {
+        for (T t : tList) {
+            System.out.println(t + "cos");
+        }
+    }
+
 
     public String typeName() {
         System.out.println("Podaj imie:");

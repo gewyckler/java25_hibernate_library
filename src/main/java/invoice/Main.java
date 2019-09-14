@@ -1,5 +1,6 @@
 package invoice;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -7,6 +8,8 @@ public class Main {
     public static void main(String[] args) {
         EntityDao entityDao = new EntityDao();
         ContentLoader ct = new ContentLoader();
+        ClientDao clientDao = new ClientDao();
+        AuthorDao authorDao = new AuthorDao();
 
         String toDo;
 
@@ -118,7 +121,7 @@ public class Main {
                     toDo = ct.menu();
 
                     if (toDo.equalsIgnoreCase("1")) { // Dodaj ksiazke do autora
-                        ct.print(entityDao.getAll(Author.class));
+                        ct.printSet(entityDao.getAll(Author.class));
                         System.out.println("Wybierz Id autora któremu chcesz dodać książkę:");
                         Long idA = ct.getId();
                         Optional<Author> optionalAuthor = entityDao.getById(Author.class, idA);
@@ -130,7 +133,16 @@ public class Main {
                             System.out.println("Dodać kolejną ksiązkę? t/n");
                         } while (ct.truOrFalse());
                     } else if (toDo.equalsIgnoreCase("2")) { // Dodawanie wypożyczeń danemu klientowi
-                        ct.createBookLent();
+                        ct.printSet(entityDao.getAll(Client.class));
+                        Client client = ct.addClientToBookLent();
+                        BookLent bookLent = ct.createBookLent(client);
+                        entityDao.saveOrUpdate(bookLent);
+
+                    } else if (toDo.equalsIgnoreCase("3")) {      // Znajdowanie autorów(liczba mnoga) po nazwisku
+                        String surName = ct.typeSurName();
+                        List<Author> authorList = authorDao.getAuthorBySurName(surName);
+
+                        ct.printList(authorList);
 
                     } else if (toDo.equalsIgnoreCase("q")) {
                         continue;
