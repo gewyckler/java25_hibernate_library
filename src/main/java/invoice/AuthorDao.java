@@ -12,7 +12,7 @@ import java.util.List;
 
 public class AuthorDao {
     public List<Author> getAuthorBySurName(String surName) {
-        List<Author> authorList = new ArrayList<>();
+//        List<Author> authorList = new ArrayList<>();
         SessionFactory factory = HibernateUtil.getSessionFactory();
 
         try (Session session = factory.openSession()) {
@@ -21,12 +21,13 @@ public class AuthorDao {
             Root root = criteriaQuery.from(Author.class);
 
             criteriaQuery.select(root)
-                    .where(criteriaBuilder.equal(root.get("surName"), surName));
+                    .where(criteriaBuilder
+                            .equal(root.get("surName"), surName));
 
-            authorList.addAll(session.createQuery(criteriaQuery).list());
+//            authorList.addAll(session.createQuery(criteriaQuery).list());
 
-//            return session.createQuery(criteriaQuery).list();
+            return session.createQuery(criteriaQuery).list();
         }
-        return authorList;
+//        return authorList;
     }
 }

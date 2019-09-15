@@ -10,6 +10,7 @@ public class Main {
         ContentLoader ct = new ContentLoader();
         ClientDao clientDao = new ClientDao();
         AuthorDao authorDao = new AuthorDao();
+        BookLentDao bookLentDao = new BookLentDao();
 
         String toDo;
 
@@ -112,44 +113,76 @@ public class Main {
                     break;
 
                 case "2":
-                    System.out.println("1. Dodawanie powiązania między książką a autorem (ten autor napisał daną książkę");
-                    System.out.println("2. Dodawanie wypożyczeń (BookLent) danemu klientowi na daną książkę");
-                    System.out.println("3. Znajdowanie autorów(liczba mnoga) po nazwisku");
-                    System.out.println("4. Znajdowanie klientów po nazwisku");
-                    System.out.println("5. Znajdowanie klientA po id number");
-                    System.out.println("q. Cofnij...");
-                    toDo = ct.menu();
+                    do {
+                        System.out.println("1. Dodawanie powiązania między książką a autorem (ten autor napisał daną książkę");
+                        System.out.println("2. Dodawanie wypożyczeń (BookLent) danemu klientowi na daną książkę");
+                        System.out.println("3. Znajdowanie autorów(liczba mnoga) po nazwisku");
+                        System.out.println("4. Znajdowanie klientów po nazwisku");
+                        System.out.println("5. Znajdowanie klientA po id number");
+                        System.out.println("q. Cofnij...");
+                        toDo = ct.menu();
 
-                    if (toDo.equalsIgnoreCase("1")) { // Dodaj ksiazke do autora
-                        ct.printSet(entityDao.getAll(Author.class));
-                        System.out.println("Wybierz Id autora któremu chcesz dodać książkę:");
-                        Long idA = ct.getId();
-                        Optional<Author> optionalAuthor = entityDao.getById(Author.class, idA);
-                        do {
-                            if (optionalAuthor.isPresent()) {
-                                ct.addBookToAuthor(optionalAuthor.get());
-                                entityDao.saveOrUpdate(optionalAuthor.get());
-                            }
-                            System.out.println("Dodać kolejną ksiązkę? t/n");
-                        } while (ct.truOrFalse());
-                    } else if (toDo.equalsIgnoreCase("2")) { // Dodawanie wypożyczeń danemu klientowi
-                        ct.printSet(entityDao.getAll(Client.class));
-                        Client client = ct.addClientToBookLent();
-                        BookLent bookLent = ct.createBookLent(client);
-                        entityDao.saveOrUpdate(bookLent);
+                        if (toDo.equalsIgnoreCase("1")) { // Dodaj ksiazke do autora
+                            ct.printSet(entityDao.getAll(Author.class));
+                            System.out.println("Wybierz Id autora któremu chcesz dodać książkę:");
+                            Long idA = ct.getId();
+                            Optional<Author> optionalAuthor = entityDao.getById(Author.class, idA);
+                            do {
+                                if (optionalAuthor.isPresent()) {
+                                    ct.addBookToAuthor(optionalAuthor.get());
+                                    entityDao.saveOrUpdate(optionalAuthor.get());
+                                }
+                                System.out.println("Dodać kolejną ksiązkę? t/n");
+                            } while (ct.truOrFalse());
+                        } else if (toDo.equalsIgnoreCase("2")) { // Dodawanie wypożyczeń danemu klientowi
+                            ct.printSet(entityDao.getAll(Client.class));
+                            Client client = ct.addClientToBookLent();
+                            BookLent bookLent = ct.createBookLent(client);
+                            entityDao.saveOrUpdate(bookLent);
 
-                    } else if (toDo.equalsIgnoreCase("3")) {      // Znajdowanie autorów(liczba mnoga) po nazwisku
-                        String surName = ct.typeSurName();
-                        List<Author> authorList = authorDao.getAuthorBySurName(surName);
+                        } else if (toDo.equalsIgnoreCase("3")) {      // Znajdowanie autorów(liczba mnoga) po nazwisku
+                            String surName = ct.typeSurName();
+                            List<Author> authorList = authorDao.getAuthorBySurName(surName);
+                            ct.printList(authorList);
 
-                        ct.printList(authorList);
+                        } else if (toDo.equalsIgnoreCase("4")) {       // znajdowanie klientów po nazwisku
+                            String surName = ct.typeSurName();
+                            List<Client> clientList = clientDao.getClientBySurName(surName);
+                            ct.printList(clientList);
 
-                    } else if (toDo.equalsIgnoreCase("q")) {
-                        continue;
-                    }
+                        } else if (toDo.equalsIgnoreCase("5")) {       // znajdowanie klientA po id number
+                            Long id = ct.getId();
+                            Set<Client> clientSet = clientDao.getClientById(id);
+                            ct.printSet(clientSet);
+
+                        } else if (toDo.equalsIgnoreCase("q")) {
+                            continue;
+                        }
+                    } while (!toDo.equalsIgnoreCase("q"));
                     break;
 
                 case "3":
+                    do {
+                        System.out.println("1. Listowanie książek wypożyczonych przez klienta");
+                        System.out.println("2. Listowanie książek nie zwróconych przez klienta");
+                        System.out.println("3. Listowanie książek których SĄ jeszcze kopie");
+                        System.out.println("4. Listowanie książek których nie ma już kopii");
+                        System.out.println("5. Listowanie książek które nie zostały zwrócone");
+                        System.out.println("5. Listowanie książek które zostały zwrócone w ciągu ostatnich N godzin.");
+                        System.out.println("6. Listowanie książek które zostały wypożyczone w ciągu ostatnich 24 h");
+                        System.out.println("7. Listowanie najczęściej wypożyczanych książek");
+                        System.out.println("8. Znalezienie najbardziej aktywnego klienta(takiego który najczęściej wypożycza)");
+                        System.out.println("q. Cofnij...");
+                        toDo = ct.menu();
+
+                        if (toDo.equalsIgnoreCase("1")) {
+                            ct.printSet(entityDao.getAll(Client.class));
+                            Long id = ct.getId();
+                            List<Book> booksLentByClient = bookLentDao.getBooksLentByClient(id);
+                            ct.printList(booksLentByClient);
+                            ct.waitForUser();
+                        }
+                    } while (!toDo.equalsIgnoreCase("q"));
 
                     break;
 
